@@ -1,0 +1,26 @@
+{
+  "name": "api_transactions",
+  "version": "1.0.0",
+  "description": "API transactions",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "kill_port": "kill -9 $(lsof -ti:5000) || true",
+    "dev": "node swagger && npm run kill_port && nodemon server.js"
+  },
+  "author": "Gustavo Tua",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "mongoose": "^8.18.2",
+    "morgan": "^1.10.1",
+    "swagger-autogen": "^2.23.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
+  }
+}
