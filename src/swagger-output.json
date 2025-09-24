@@ -20,7 +20,60 @@
   "paths": {
     "/api/v1/transactions/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Get All Transactions",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Transaction Info",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Carlos Jam"
+                },
+                "age": {
+                  "type": "number",
+                  "example": 25
+                },
+                "city": {
+                  "type": "string",
+                  "example": "New York"
+                },
+                "sin": {
+                  "type": "string",
+                  "example": "123456783"
+                },
+                "creditCardNumber": {
+                  "type": "string",
+                  "example": "9999777712340069"
+                },
+                "creditCardType": {
+                  "type": "string",
+                  "example": "Visa"
+                },
+                "amount": {
+                  "type": "number",
+                  "example": 800
+                }
+              },
+              "required": [
+                "name",
+                "age",
+                "city",
+                "sin",
+                "creditCardNumber",
+                "creditCardType",
+                "amount"
+              ]
+            }
+          }
+        ],
         "responses": {
           "default": {
             "description": ""
@@ -28,7 +81,130 @@
         }
       },
       "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "description": "Generate a new transaction",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "Transaction Info",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "Carlos Jam"
+                },
+                "age": {
+                  "type": "number",
+                  "example": 25
+                },
+                "city": {
+                  "type": "string",
+                  "example": "New York"
+                },
+                "sin": {
+                  "type": "string",
+                  "example": "123456783"
+                },
+                "creditCardNumber": {
+                  "type": "string",
+                  "example": "9999777712340069"
+                },
+                "creditCardType": {
+                  "type": "string",
+                  "example": "Visa"
+                },
+                "amount": {
+                  "type": "number",
+                  "example": 800
+                }
+              },
+              "required": [
+                "name",
+                "age",
+                "city",
+                "sin",
+                "creditCardNumber",
+                "creditCardType",
+                "amount"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Transaction created",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "3"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Carlos Jam"
+                    },
+                    "age": {
+                      "type": "number",
+                      "example": 25
+                    },
+                    "city": {
+                      "type": "string",
+                      "example": "New York"
+                    },
+                    "sin": {
+                      "type": "string",
+                      "example": "123456783"
+                    },
+                    "creditCardNumber": {
+                      "type": "string",
+                      "example": "9999777712340069"
+                    },
+                    "creditCardType": {
+                      "type": "string",
+                      "example": "Visa"
+                    },
+                    "amount": {
+                      "type": "number",
+                      "example": 800
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Incorrect Information"
+          }
+        }
+      }
+    },
+    "/api/v1/transactions/{id}": {
+      "post": {
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "default": {
             "description": ""

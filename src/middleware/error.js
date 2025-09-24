@@ -3,18 +3,26 @@ const ErrorResponse = require("../utils/errorResponse");
 
 const errorHandler = (err, req, res, next) => {
   let error = { ...err };
+
   error.message = err.message;
+  error.statusCode = statusCodes.ERROR;
 
-  console.log(err);
+  if (err.name === "CastError") {
+    const message = `Resource not found with id of ${err.value}`;
+    error = new ErrorResponse(message, statusCodes.NOT_FOUND);
+  }
 
-  // Duplicate key error (MongoDB code 11000)
   if (err.code === 11000) {
     const field = Object.entries(err.keyValue).map((fieldArr) =>
       fieldArr.join(":")
     );
-    console.log(Object.entries(err.keyValue));
-    const message = `Duplicated field value entere ${field}`;
+    const message = `Duplicated field value entered ${field}`;
     error = new ErrorResponse(message, statusCodes.NOT_FOUND);
+  }
+
+  if (err.name === "ValidationError") {
+    const messages = Object.values(err.errors).map((val) => val.message);
+    error = new ErrorResponse(messages.join(", "), statusCodes.BAD_REQUEST);
   }
 
   res.status(error.statusCode || statusCodes.ERROR).json({

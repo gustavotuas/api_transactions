@@ -1,6 +1,7 @@
 const TransactionsSchema = require("../models/transactions");
 const statusCodes = require("../utils/statusCodes");
 const asyncHandler = require("../middleware/async");
+const ErrorResponse = require("../utils/errorResponse");
 
 //@des Get All Transacctions
 //@route GET /api/v1/transactions
@@ -86,4 +87,60 @@ exports.createTransaction = asyncHandler(async (req, res, next) => {
     count: newTransaction.length,
     data: newTransaction,
   });
+});
+
+//@desc Update a Transaction
+//@route PUT /api/v1/transactions/:id
+//@access Public
+exports.updateTransaction = asyncHandler(async (req, res, next) => {
+  const body = req.body;
+
+  if (!body) {
+    next(
+      new ErrorResponse(
+        "Params required for update transaction",
+        statusCodes.BAD_REQUEST
+      )
+    );
+  }
+
+  const updateTransaction = await TransactionsSchema.findByIdAndUpdate(
+    req.params.id,
+    body,
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!updateTransaction) {
+    return next(
+      new ErrorResponse(
+        `Not found transaction with id:${req.params.id}`,
+        statusCodes.BAD_REQUEST
+      )
+    );
+  }
+
+  res.status(statusCodes.OK).json({ success: true, data: updateTransaction });
+});
+
+//@desc Delete a Transaction
+//@route DELETE /api/v1/transactions/:id
+//@access Public
+exports.deleteTransaction = asyncHandler(async (req, res, next) => {
+  const deletedTransaction = await TransactionsSchema.findByIdAndDelete(
+    req.params.id
+  );
+
+  if (!deletedTransaction) {
+    return next(
+      new ErrorResponse(
+        `Not found resource with id: ${req.params.id}`,
+        statusCodes.BAD_REQUEST
+      )
+    );
+  }
+
+  res.status(statusCodes.OK).json({ success: true });
 });
