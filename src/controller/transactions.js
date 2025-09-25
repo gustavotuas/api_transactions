@@ -2,6 +2,7 @@ const TransactionsSchema = require("../models/transactions");
 const statusCodes = require("../utils/statusCodes");
 const asyncHandler = require("../middleware/async");
 const ErrorResponse = require("../utils/errorResponse");
+const jsonwebtoken = require("jsonwebtoken");
 
 //@des Get All Transacctions
 //@route GET /api/v1/transactions
@@ -127,7 +128,7 @@ exports.updateTransaction = asyncHandler(async (req, res, next) => {
 
 //@desc Delete a Transaction
 //@route DELETE /api/v1/transactions/:id
-//@access Public
+//@access Private
 exports.deleteTransaction = asyncHandler(async (req, res, next) => {
   const deletedTransaction = await TransactionsSchema.findByIdAndDelete(
     req.params.id
@@ -143,4 +144,27 @@ exports.deleteTransaction = asyncHandler(async (req, res, next) => {
   }
 
   res.status(statusCodes.OK).json({ success: true });
+});
+
+exports.login = asyncHandler(async (req, res, next) => {
+  const transaction = TransactionsSchema.findById(req.params.id);
+
+  if (!transaction) {
+    return next(
+      new ErrorResponse(
+        `Not Found resource with id: ${req.params.id}`,
+        statusCodes.NOT_FOUND
+      )
+    );
+  }
+
+  const token = jsonwebtoken.sign(
+    { id: req.params.id },
+    process.env.SECRET_KEY,
+    {
+      expiresIn: "30d",
+    }
+  );
+
+  res.status(statusCodes.OK).json({ success: true, token });
 });

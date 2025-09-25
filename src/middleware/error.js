@@ -5,7 +5,6 @@ const errorHandler = (err, req, res, next) => {
   let error = { ...err };
 
   error.message = err.message;
-  error.statusCode = statusCodes.ERROR;
 
   if (err.name === "CastError") {
     const message = `Resource not found with id of ${err.value}`;
@@ -25,9 +24,9 @@ const errorHandler = (err, req, res, next) => {
     error = new ErrorResponse(messages.join(", "), statusCodes.BAD_REQUEST);
   }
 
-  res.status(error.statusCode || statusCodes.ERROR).json({
+  res.status(error.statusCode ?? statusCodes.ERROR).json({
     success: false,
-    error: error.message || "Server Error",
+    error: error.message ?? "Server Error",
   });
 };
 

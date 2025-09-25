@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 
 const TransactionsSchema = new mongoose.Schema({
@@ -22,6 +23,12 @@ const TransactionsSchema = new mongoose.Schema({
   creditCardType: { type: String, enum: ["Visa", "Mastercard"] },
   amount: { type: Number, required: [true, "Required an Amount"] },
 });
+
+TransactionsSchema.methods.getSignedJwtToken = function () {
+  return jwt.sign({ id: this._id }, process.env.SECRET, {
+    expiresIn: "30d",
+  });
+};
 
 module.exports = mongoose.model(
   "Transaction",

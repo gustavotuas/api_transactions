@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "kill_port": "kill -9 $(lsof -ti:5000) || true",
-    "dev": "node swagger && npm run kill_port && nodemon server.js"
+    "dev": "clear && node swagger && npm run kill_port && nodemon server.js"
   },
   "author": "Gustavo Tua",
   "license": "MIT",
