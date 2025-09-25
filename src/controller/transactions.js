@@ -21,11 +21,58 @@ exports.getTransactions = asyncHandler(async (req, res, next) => {
   //     ]
   //   }
   // }
-  const transactions = await TransactionsSchema.find();
 
-  res
-    .status(statusCodes.OK)
-    .json({ success: true, count: transactions.length, data: transactions });
+  let query = TransactionsSchema.find();
+
+  if (req.query.sort) {
+    const sortStr = req.query.sort.split(",").join(" ");
+    query = query.sort(sortStr);
+  }
+
+  if (req.query.select) {
+    const strSelect = req.query.select.split(",").join(" ");
+    query = query.select(strSelect);
+  }
+
+  const limit = parseInt(req.query.limit) ?? 1;
+  query = query.limit(limit);
+
+  const page = parseInt(req.query.page) ?? 1;
+  const startIndex = limit * (page - 1);
+  const endIndex = limit * page;
+  const totalDocuments = await TransactionsSchema.countDocuments();
+  query = query.skip(startIndex);
+
+  //pagination
+  const pagination = {};
+
+  let hasMore = true;
+
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit,
+    };
+  }
+
+  if (endIndex < totalDocuments) {
+    pagination.next = {
+      page: page + 1,
+      limit,
+    };
+  } else {
+    hasMore = false;
+  }
+
+  const transactions = await query;
+
+  res.status(statusCodes.OK).json({
+    success: true,
+    count: transactions.length,
+    hasMore,
+    pagination,
+    data: transactions,
+  });
 });
 
 //@desc Create a new Transaction
